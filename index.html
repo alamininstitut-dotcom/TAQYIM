@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تَقْييمُ الدَّرْس – مَعْهَدُ الأَمين</title>
+<link rel="icon" href="https://res.cloudinary.com/difo1j3ol/image/upload/v1778521078/%D8%A7%D9%84%D9%84%D9%88%D8%BA%D9%88_anabeh.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFFDF8; --sand:#F6EFE0; --gold:#C8970A; --gold-lt:#F0D68C;
+  --teal:#4DB8B3; --teal-dk:#3A9A95; --ink:#2B2118; --line:#E9DCC0;
+  --muted:#8B7C66; --ok:#2E9E6B; --err:#C9524E;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--cream); color:var(--ink);
+  font-family:'Tajawal',sans-serif; line-height:1.6;
+  padding:0 0 60px; -webkit-text-size-adjust:100%;
+}
+
+/* ── نِظامُ اللُّغَة ── */
+.de{display:none}
+body.lang-de .ar-txt{display:none}
+body.lang-de .de{display:block}
+body.lang-de span.de,body.lang-de b.de,body.lang-de small.de{display:inline}
+
+/* ── الشَّريطُ العُلْوي ── */
+.top{
+  position:sticky; top:0; z-index:20;
+  background:rgba(255,253,248,.94); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; padding:10px 16px;
+}
+.top img{height:38px}
+.langbtn{
+  font-family:'Tajawal',sans-serif; font-size:.88rem; font-weight:800;
+  background:#fff; border:2px solid var(--line); border-radius:999px;
+  padding:6px 15px; cursor:pointer; color:var(--ink); transition:.2s;
+}
+.langbtn:hover{border-color:var(--teal)}
+.bar{height:4px; background:var(--sand)}
+.bar i{display:block; height:100%; width:0; background:var(--teal); transition:width .35s ease}
+
+/* ── الغِلاف ── */
+.wrap{max-width:660px; margin:0 auto; padding:0 16px}
+.head{text-align:center; padding:26px 0 8px}
+.head h1{font-family:'Amiri',serif; font-size:2rem; line-height:1.25}
+.head h1.de{font-family:'Tajawal',sans-serif; font-size:1.7rem; font-weight:800}
+.lesson{
+  display:inline-block; margin-top:10px;
+  background:var(--sand); border:1.5px solid var(--line);
+  border-radius:999px; padding:5px 16px;
+  font-weight:700; font-size:1rem; color:var(--gold);
+}
+.intro{
+  margin:16px 0 4px; padding:14px 16px;
+  background:#fff; border:1.5px solid var(--line); border-radius:16px;
+  font-size:.95rem; color:var(--muted);
+}
+
+/* ── الأَقْسام ── */
+.sec{margin-top:26px}
+.sec h2{
+  font-size:.82rem; font-weight:800; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--gold);
+  display:flex; align-items:center; gap:10px; margin-bottom:12px;
+}
+.sec h2::after{content:''; flex:1; height:1.5px; background:var(--line)}
+
+.q{
+  background:#fff; border:1.5px solid var(--line); border-radius:18px;
+  padding:16px 16px 14px; margin-bottom:12px; transition:border-color .2s;
+}
+.q.miss{border-color:var(--err); background:#FFF8F8}
+.q .lbl{font-size:1.06rem; font-weight:700; margin-bottom:2px}
+.q .lbl.de{font-size:1rem}
+.q .req{color:var(--gold); font-weight:800}
+.q .hint{font-size:.85rem; color:var(--muted); margin-bottom:10px}
+
+/* ── أَزْرارُ الاخْتِيار ── */
+.opts{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+.opt{
+  font-family:'Tajawal',sans-serif; font-size:.95rem; font-weight:700;
+  background:var(--cream); color:var(--ink);
+  border:2px solid var(--line); border-radius:999px;
+  padding:8px 16px; cursor:pointer; transition:.18s;
+}
+.opt:hover{border-color:var(--teal)}
+.opt.on{background:var(--teal); border-color:var(--teal); color:#fff}
+
+/* ── النُّجوم ── */
+.stars{display:flex; gap:6px; margin-top:8px; font-size:2rem; line-height:1}
+.star{
+  background:none; border:none; cursor:pointer; padding:2px 3px;
+  color:var(--line); transition:transform .12s, color .15s;
+}
+.star:hover{transform:scale(1.14)}
+.star.on{color:var(--gold)}
+.scale{
+  display:flex; justify-content:space-between;
+  font-size:.78rem; color:var(--muted); margin-top:4px; max-width:206px;
+}
+
+/* ── الحُقولُ النَّصِّيَّة ── */
+textarea,input[type=text]{
+  width:100%; font-family:'Tajawal',sans-serif; font-size:1rem;
+  color:var(--ink); background:var(--cream);
+  border:2px solid var(--line); border-radius:14px;
+  padding:11px 13px; margin-top:9px; resize:vertical;
+}
+textarea:focus,input:focus{outline:none; border-color:var(--teal)}
+textarea{min-height:82px}
+
+/* ── الإرْسال ── */
+.send{
+  display:block; width:100%; margin:26px 0 10px;
+  font-family:'Tajawal',sans-serif; font-size:1.15rem; font-weight:800;
+  background:var(--gold); color:#fff; border:none; border-radius:16px;
+  padding:16px; cursor:pointer; box-shadow:0 4px 0 #A77C08; transition:.15s;
+}
+.send:active{transform:translateY(3px); box-shadow:0 1px 0 #A77C08}
+.send[disabled]{opacity:.6; cursor:default; box-shadow:0 4px 0 #A77C08}
+.note{text-align:center; font-size:.85rem; color:var(--muted)}
+.msg{
+  display:none; margin-top:12px; padding:12px 14px; border-radius:14px;
+  font-weight:700; font-size:.95rem; text-align:center;
+}
+.msg.show{display:block}
+.msg.bad{background:#FFF0EF; border:1.5px solid var(--err); color:var(--err)}
+
+/* ── شاشَةُ الشُّكْر ── */
+.done{display:none; text-align:center; padding:48px 10px}
+.done.show{display:block}
+.done img{height:76px; margin-bottom:18px}
+.done h2{font-family:'Amiri',serif; font-size:2.1rem; margin-bottom:8px}
+.done h2.de{font-family:'Tajawal',sans-serif; font-size:1.8rem; font-weight:800}
+.done p{color:var(--muted); font-size:1.02rem}
+.conf{font-size:2.6rem; letter-spacing:6px; margin-bottom:10px}
+</style>
+</head>
+<body class="lang-ar">
+
+<div class="top">
+  <img src="https://res.cloudinary.com/difo1j3ol/image/upload/v1778521078/%D8%A7%D9%84%D9%84%D9%88%D8%BA%D9%88_anabeh.png" alt="معهد الأمين">
+  <button class="langbtn" id="langbtn" onclick="toggleLang()">🇩🇪 Deutsch</button>
+</div>
+<div class="bar"><i id="prog"></i></div>
+
+<div class="wrap">
+
+  <!-- ══ الاسْتِمارَة ══ -->
+  <div id="formWrap">
+
+    <div class="head">
+      <h1 class="ar-txt">ما رَأْيُكُم في الدَّرْس؟</h1>
+      <h1 class="de">Wie fanden Sie die Lektion?</h1>
+      <div class="lesson" id="lessonTag"></div>
+    </div>
+
+    <div class="intro">
+      <div class="ar-txt">رَأْيُكُم يُساعِدُنا على تَحْسينِ الدُّروسِ القادِمَة. التَّقْييمُ مَجْهول، ولا يَسْتَغْرِقُ أَكْثَرَ مِنْ دَقيقَتَيْن. الأَسْئِلَةُ المُعَلَّمَةُ بِـ<span class="req">*</span> مَطْلوبَة.</div>
+      <div class="de">Ihre Rückmeldung hilft uns, die nächsten Lektionen zu verbessern. Die Umfrage ist anonym und dauert keine zwei Minuten. Mit <span class="req">*</span> markierte Fragen sind Pflichtfragen.</div>
+    </div>
+
+    <!-- ── القِسْمُ الأَوَّل ── -->
+    <div class="sec">
+      <h2><span class="ar-txt">هَلْ تَحَقَّقَ هَدَفُ الدَّرْس؟</span><span class="de">Lernziel erreicht?</span></h2>
+
+      <div class="q" data-k="q1">
+        <div class="lbl ar-txt">هَلْ صارَ طِفْلُكُم يُمَيِّزُ المُفْرَدَ مِنَ الجَمْع؟ <span class="req">*</span></div>
+        <div class="lbl de">Unterscheidet Ihr Kind jetzt Einzahl und Mehrzahl? <span class="req">*</span></div>
+        <div class="opts" data-opts="sure"></div>
+      </div>
+
+      <div class="q" data-k="q2">
+        <div class="lbl ar-txt">هَلْ يَسْتَطيعُ جَمْعَ كَلِمَةٍ جَديدَةٍ لَمْ تَرِدْ في الدَّرْس؟ <span class="req">*</span></div>
+        <div class="lbl de">Kann es ein neues Wort selbst in die Mehrzahl setzen? <span class="req">*</span></div>
+        <div class="hint ar-txt">جَرِّبوا مَعَهُ كَلِمَةً مِنْ عِنْدِكُم.</div>
+        <div class="hint de">Probieren Sie ein eigenes Wort mit ihm aus.</div>
+        <div class="opts" data-opts="sure"></div>
+      </div>
+
+      <div class="q" data-k="q3">
+        <div class="lbl ar-txt">هَلْ فَهِمَ أَنْواعَ الجَمْعِ الثَّلاثَة؟ <span class="req">*</span></div>
+        <div class="lbl de">Hat es die drei Pluralarten verstanden? <span class="req">*</span></div>
+        <div class="hint ar-txt">جَمْعُ المُذَكَّرِ السّالِم، جَمْعُ المُؤَنَّثِ السّالِم، جَمْعُ التَّكْسير.</div>
+        <div class="hint de">Maskulin-, Feminin- und gebrochener Plural.</div>
+        <div class="opts" data-opts="sure"></div>
+      </div>
+
+      <div class="q" data-k="q4">
+        <div class="lbl ar-txt">كَمِ احْتاجَ إلى مُساعَدَتِكُم؟ <span class="req">*</span></div>
+        <div class="lbl de">Wie viel Hilfe hat es gebraucht? <span class="req">*</span></div>
+        <div class="opts" data-opts="help"></div>
+      </div>
+    </div>
+
+    <!-- ── القِسْمُ الثّاني ── -->
+    <div class="sec">
+      <h2><span class="ar-txt">تَجْرِبَةُ الاسْتِعْمال</span><span class="de">Nutzung der Seite</span></h2>
+
+      <div class="q" data-k="q5">
+        <div class="lbl ar-txt">سُهولَةُ اسْتِعْمالِ الصَّفْحَة <span class="req">*</span></div>
+        <div class="lbl de">Bedienbarkeit der Seite <span class="req">*</span></div>
+        <div class="stars" data-stars="q5"></div>
+        <div class="scale"><span class="ar-txt">صَعْبَة</span><span class="de">schwierig</span><span class="ar-txt">سَهْلَة جِدّاً</span><span class="de">sehr einfach</span></div>
+      </div>
+
+      <div class="q" data-k="q6">
+        <div class="lbl ar-txt">وُضوحُ التَّعْليماتِ بِالأَلْمانِيَّة <span class="req">*</span></div>
+        <div class="lbl de">Verständlichkeit der deutschen Hinweise <span class="req">*</span></div>
+        <div class="stars" data-stars="q6"></div>
+        <div class="scale"><span class="ar-txt">غَيْرُ واضِحَة</span><span class="de">unklar</span><span class="ar-txt">واضِحَةٌ تَماماً</span><span class="de">sehr klar</span></div>
+      </div>
+
+      <div class="q" data-k="q7">
+        <div class="lbl ar-txt">هَلِ اسْتَمْتَعَ الطِّفْلُ بِالدَّرْسِ وَالأَلْعاب؟ <span class="req">*</span></div>
+        <div class="lbl de">Hatte Ihr Kind Spaß beim Lernen und bei den Spielen? <span class="req">*</span></div>
+        <div class="stars" data-stars="q7"></div>
+        <div class="scale"><span class="ar-txt">أَبَداً</span><span class="de">gar nicht</span><span class="ar-txt">كَثيراً جِدّاً</span><span class="de">sehr viel</span></div>
+      </div>
+
+      <div class="q" data-k="q8">
+        <div class="lbl ar-txt">كَمْ دَقيقَةً اسْتَغْرَقَ تَقْريباً؟</div>
+        <div class="lbl de">Wie lange hat es ungefähr gedauert?</div>
+        <div class="opts" data-opts="time"></div>
+      </div>
+
+      <div class="q" data-k="q9">
+        <div class="lbl ar-txt">هَلِ اسْتَعْمَلْتُمْ وَرَقَةَ العَمَلِ المَطْبوعَة؟</div>
+        <div class="lbl de">Haben Sie das Arbeitsblatt zum Ausdrucken genutzt?</div>
+        <div class="opts" data-opts="ws"></div>
+      </div>
+    </div>
+
+    <!-- ── القِسْمُ الثّالِث ── -->
+    <div class="sec">
+      <h2><span class="ar-txt">رَأْيُكُمْ بِحُرِّيَّة</span><span class="de">Ihre Meinung</span></h2>
+
+      <div class="q">
+        <div class="lbl ar-txt">ما الَّذي أَعْجَبَكُمْ أَكْثَر؟</div>
+        <div class="lbl de">Was hat Ihnen am besten gefallen?</div>
+        <textarea id="good" data-ph-ar="اُكْتُبوا هُنا…" data-ph-de="Hier schreiben …"></textarea>
+      </div>
+
+      <div class="q">
+        <div class="lbl ar-txt">ما الَّذي يَحْتاجُ إلى تَحْسين؟</div>
+        <div class="lbl de">Was sollten wir verbessern?</div>
+        <textarea id="better" data-ph-ar="اُكْتُبوا هُنا…" data-ph-de="Hier schreiben …"></textarea>
+      </div>
+
+      <div class="q">
+        <div class="lbl ar-txt">الاسْم <small>(اخْتِياري)</small></div>
+        <div class="lbl de">Name <small>(freiwillig)</small></div>
+        <div class="hint ar-txt">اُتْرُكوهُ فارِغاً إذا أَرَدْتُمُ البَقاءَ مَجْهولين.</div>
+        <div class="hint de">Leer lassen, wenn Sie anonym bleiben möchten.</div>
+        <input type="text" id="name" maxlength="60" data-ph-ar="اسْمُ الأَهْلِ أَوِ الطِّفْل" data-ph-de="Name der Eltern oder des Kindes">
+      </div>
+    </div>
+
+    <button class="send" id="send" onclick="submitForm()">
+      <span class="ar-txt">إرْسالُ التَّقْييم</span><span class="de">Bewertung senden</span>
+    </button>
+    <div class="note">
+      <span class="ar-txt">لا نَجْمَعُ أَيَّ بَياناتٍ شَخْصِيَّةٍ غَيْرِ ما تَكْتُبونَهُ بِأَنْفُسِكُم.</span>
+      <span class="de">Wir erheben keine personenbezogenen Daten außer denen, die Sie selbst eintragen.</span>
+    </div>
+    <div class="msg bad" id="msg"></div>
+  </div>
+
+  <!-- ══ شاشَةُ الشُّكْر ══ -->
+  <div class="done" id="done">
+    <div class="conf">🌟 🎉 🌟</div>
+    <img src="https://res.cloudinary.com/difo1j3ol/image/upload/v1778521078/%D8%A7%D9%84%D9%84%D9%88%D8%BA%D9%88_anabeh.png" alt="">
+    <h2 class="ar-txt">شُكْراً لَكُم!</h2>
+    <h2 class="de">Vielen Dank!</h2>
+    <p class="ar-txt">وَصَلَ تَقْييمُكُم. رَأْيُكُمْ يَصْنَعُ الدَّرْسَ القادِم.</p>
+    <p class="de">Ihre Bewertung ist angekommen. Ihr Feedback gestaltet die nächste Lektion mit.</p>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   ① الصِقْ هُنا رابِطَ Google Apps Script بَعْدَ النَّشْر
+   ═══════════════════════════════════════════════════════ */
+const SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_URL_HERE';
+
+/* ── أَسْماءُ الدُّروس ── */
+const LESSONS = {
+  'aljam3'            : ['الجَمْع','Der Plural'],
+  'kalimatwafatha'    : ['كَلِماتٌ بِالفَتْحَة','Wörter mit Fatha'],
+  'ikhtiyaru-alharfi' : ['الحُروفُ مَعَ الفَتْحَة','Buchstaben mit Fatha'],
+  'ikhtiyar-assadiqi' : ['اخْتِيارُ الصَّديق','Die Wahl des Freundes'],
+  'huquq-assadaqa'    : ['حُقوقُ الصَّداقَة','Rechte der Freundschaft'],
+  'hassat-assama3'    : ['حاسَّةُ السَّمْع','Der Hörsinn'],
+  'aljumla'           : ['الجُمْلَةُ المُفيدَة','Der sinnvolle Satz'],
+  'alibil'            : ['الإعْجازُ في خَلْقِ الإبِل','Das Wunder der Kamele']
+};
+
+/* ── مَجْموعاتُ الخِيارات ── */
+const OPTS = {
+  sure: [['ja','نَعَمْ تَماماً','Ja, sicher'],
+         ['teils','إلى حَدٍّ ما','Teilweise'],
+         ['nein','لا بَعْد','Noch nicht']],
+  help: [['keine','بِلا مُساعَدَة','Gar keine'],
+         ['wenig','قَليلاً','Wenig'],
+         ['viel','كَثيراً','Viel']],
+  time: [['u10','أَقَلُّ مِنْ 10 دَقائِق','unter 10 Min.'],
+         ['10-20','10 – 20 دَقيقَة','10 – 20 Min.'],
+         ['20-30','20 – 30 دَقيقَة','20 – 30 Min.'],
+         ['o30','أَكْثَرُ مِنْ 30 دَقيقَة','über 30 Min.']],
+  ws:   [['ja','نَعَمْ','Ja'],
+         ['nein','لا','Nein'],
+         ['unbekannt','لَمْ نَنْتَبِهْ لَها','Nicht bemerkt']]
+};
+
+const REQUIRED = ['q1','q2','q3','q4','q5','q6','q7'];
+const A = {};                      /* الإجاباتُ المُخْتارَة */
+let LANG = 'ar', sending = false;
+
+/* ── بِناءُ أَزْرارِ الاخْتِيار ── */
+document.querySelectorAll('[data-opts]').forEach(box=>{
+  const key = box.closest('.q').dataset.k;
+  OPTS[box.dataset.opts].forEach(([val,ar,de])=>{
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'opt'; b.dataset.v = val;
+    b.innerHTML = '<span class="ar-txt">'+ar+'</span><span class="de">'+de+'</span>';
+    b.onclick = ()=>{
+      A[key] = val;
+      [...box.children].forEach(c=>c.classList.toggle('on', c === b));
+      box.closest('.q').classList.remove('miss');
+      drawProg();
+    };
+    box.appendChild(b);
+  });
+});
+
+/* ── بِناءُ النُّجوم ── */
+document.querySelectorAll('[data-stars]').forEach(box=>{
+  const key = box.dataset.stars;
+  for(let i=1;i<=5;i++){
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'star'; b.textContent = '★';
+    b.setAttribute('aria-label', i + ' / 5');
+    b.onclick = ()=>{
+      A[key] = i;
+      [...box.children].forEach((c,j)=>c.classList.toggle('on', j < i));
+      box.closest('.q').classList.remove('miss');
+      drawProg();
+    };
+    box.appendChild(b);
+  }
+});
+
+/* ── شَريطُ التَّقَدُّم ── */
+function drawProg(){
+  const n = REQUIRED.filter(k=>A[k] !== undefined).length;
+  document.getElementById('prog').style.width = (n / REQUIRED.length * 100) + '%';
+}
+
+/* ── اللُّغَة ── */
+function setLang(l){
+  LANG = l;
+  document.body.classList.toggle('lang-ar', l === 'ar');
+  document.body.classList.toggle('lang-de', l === 'de');
+  document.documentElement.lang = l;
+  document.documentElement.dir = (l === 'ar') ? 'rtl' : 'ltr';
+  document.getElementById('langbtn').textContent =
+    (l === 'ar') ? '🇩🇪 Deutsch' : '🇸🇦 العَرَبِيَّة';
+  document.querySelectorAll('[data-ph-ar]').forEach(el=>{
+    el.placeholder = (l === 'ar') ? el.dataset.phAr : el.dataset.phDe;
+  });
+  drawLesson();
+  /* رِسالَةُ الخَطَأِ تُخْفى عِنْدَ تَبْديلِ اللُّغَةِ لِئَلّا تَبْقى بِلُغَةٍ أُخْرى */
+  var m = document.getElementById('msg'); if(m) m.classList.remove('show');
+  var sb = document.getElementById('send');
+  if(sb && !sending){
+    sb.innerHTML = '<span class="ar-txt">إرْسالُ التَّقْييم</span><span class="de">Bewertung senden</span>';
+  }
+  try{ localStorage.setItem('alamin-taqyim-lang', l); }catch(e){}
+}
+function toggleLang(){ setLang(LANG === 'ar' ? 'de' : 'ar'); }
+
+/* ── اسْمُ الدَّرْسِ مِنَ الرّابِط ── */
+const LKEY = (new URLSearchParams(location.search).get('lesson') || '').trim();
+function drawLesson(){
+  const tag = document.getElementById('lessonTag');
+  const l = LESSONS[LKEY];
+  if(!l){ tag.style.display = 'none'; return; }
+  tag.style.display = 'inline-block';
+  tag.textContent = (LANG === 'ar' ? 'دَرْسُ ' + l[0] : 'Lektion: ' + l[1]);
+}
+
+/* ── الإرْسال ── */
+function submitForm(){
+  if(sending) return;
+  const msg = document.getElementById('msg');
+  msg.classList.remove('show');
+
+  /* التَّحَقُّقُ مِنَ الأَسْئِلَةِ المَطْلوبَة */
+  const missing = REQUIRED.filter(k=>A[k] === undefined);
+  document.querySelectorAll('.q').forEach(q=>q.classList.remove('miss'));
+  if(missing.length){
+    missing.forEach(k=>{
+      const q = document.querySelector('.q[data-k="'+k+'"]');
+      if(q) q.classList.add('miss');
+    });
+    msg.textContent = (LANG === 'ar')
+      ? 'بَقِيَتْ ' + missing.length + ' أَسْئِلَةٍ مَطْلوبَة.'
+      : 'Es fehlen noch ' + missing.length + ' Pflichtfragen.';
+    msg.classList.add('show');
+    const first = document.querySelector('.q[data-k="' + missing[0] + '"]');
+    if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
+  const data = {
+    lesson : LKEY || '—',
+    q1:A.q1||'', q2:A.q2||'', q3:A.q3||'', q4:A.q4||'',
+    q5:A.q5||'', q6:A.q6||'', q7:A.q7||'',
+    q8:A.q8||'', q9:A.q9||'',
+    good   : document.getElementById('good').value.trim(),
+    better : document.getElementById('better').value.trim(),
+    name   : document.getElementById('name').value.trim(),
+    lang   : LANG,
+    ua     : navigator.userAgent.slice(0,120)
+  };
+
+  sending = true;
+  const btn = document.getElementById('send');
+  btn.disabled = true;
+  btn.innerHTML = (LANG === 'ar') ? 'جارٍ الإرْسال…' : 'Wird gesendet …';
+
+  send(data).then(ok=>{
+    if(ok){ showDone(); }
+    else{
+      sending = false;
+      btn.disabled = false;
+      btn.innerHTML = '<span class="ar-txt">إرْسالُ التَّقْييم</span><span class="de">Bewertung senden</span>';
+      msg.textContent = (LANG === 'ar')
+        ? 'تَعَذَّرَ الإرْسال. تَحَقَّقوا مِنَ الاتِّصالِ وَأَعيدوا المُحاوَلَة.'
+        : 'Senden fehlgeschlagen. Bitte Verbindung prüfen und erneut versuchen.';
+      msg.classList.add('show');
+    }
+  });
+}
+
+/* مُحاوَلَتان: الأولى تَقْرَأُ الرَّدّ، وَالثّانِيَةُ تُرْسِلُ دونَ قِراءَة */
+function send(data){
+  if(!SCRIPT_URL || SCRIPT_URL.indexOf('http') !== 0){
+    console.warn('SCRIPT_URL لَمْ يُضْبَطْ بَعْد'); return Promise.resolve(false);
+  }
+  const body = JSON.stringify(data);
+  return fetch(SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:body})
+    .then(r=>r.json()).then(j=>!!(j && j.ok))
+    .catch(()=>
+      fetch(SCRIPT_URL, {method:'POST', mode:'no-cors',
+        headers:{'Content-Type':'text/plain;charset=utf-8'}, body:body})
+        .then(()=>true).catch(()=>false)
+    );
+}
+
+function showDone(){
+  document.getElementById('formWrap').style.display = 'none';
+  document.getElementById('done').classList.add('show');
+  document.getElementById('prog').style.width = '100%';
+  window.scrollTo({top:0, behavior:'smooth'});
+  try{ localStorage.setItem('alamin-taqyim-' + LKEY, '1'); }catch(e){}
+}
+
+/* ── الإقْلاع ── */
+let saved = 'ar';
+try{ saved = localStorage.getItem('alamin-taqyim-lang') || 'ar'; }catch(e){}
+setLang(saved);
+drawProg();
+</script>
+</body>
+</html>
