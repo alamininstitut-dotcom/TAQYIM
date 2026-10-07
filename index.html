@@ -284,11 +284,17 @@ textarea{min-height:82px}
 
 </div>
 
+<!-- قَناةُ الإرْسال: نَموذَجٌ حَقيقيٌّ يُرْسَلُ داخِلَ إطارٍ مَخْفيّ — لا يَعْتَرِضُهُ CORS -->
+<iframe name="alamin-sink" id="sink" style="display:none" aria-hidden="true" title=""></iframe>
+<form id="relay" method="POST" target="alamin-sink" action="" accept-charset="UTF-8" style="display:none">
+  <input type="hidden" name="payload" id="payload">
+</form>
+
 <script>
 /* ═══════════════════════════════════════════════════════
    ① الصِقْ هُنا رابِطَ Google Apps Script بَعْدَ النَّشْر
    ═══════════════════════════════════════════════════════ */
-const SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_URL_HERE';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkEXM-nvTLoFmEqMNTjH6yYZuAqnQ8PKqHJB4-skTwBuS9rkG4a6yD_eF6CtYpPRjh/exec';
 
 /* ── أَسْماءُ الدُّروس ── */
 const LESSONS = {
@@ -450,19 +456,31 @@ function submitForm(){
   });
 }
 
-/* مُحاوَلَتان: الأولى تَقْرَأُ الرَّدّ، وَالثّانِيَةُ تُرْسِلُ دونَ قِراءَة */
+/* الإرْسالُ عَبْرَ نَموذَجٍ داخِلَ إطارٍ مَخْفيّ:
+   أَكْثَرُ الطُّرُقِ مَوْثوقِيَّةً مَعَ Google Apps Script، لِأَنَّ إرْسالَ
+   النَّماذِجِ لا تَحْكُمُهُ قُيودُ CORS إطْلاقاً. */
 function send(data){
   if(!SCRIPT_URL || SCRIPT_URL.indexOf('http') !== 0){
     console.warn('SCRIPT_URL لَمْ يُضْبَطْ بَعْد'); return Promise.resolve(false);
   }
-  const body = JSON.stringify(data);
-  return fetch(SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:body})
-    .then(r=>r.json()).then(j=>!!(j && j.ok))
-    .catch(()=>
-      fetch(SCRIPT_URL, {method:'POST', mode:'no-cors',
-        headers:{'Content-Type':'text/plain;charset=utf-8'}, body:body})
-        .then(()=>true).catch(()=>false)
-    );
+  return new Promise(function(resolve){
+    var ifr = document.getElementById('sink');
+    var frm = document.getElementById('relay');
+    var fin = false;
+    var t = setTimeout(function(){
+      if(fin) return; fin = true; ifr.onload = null; resolve(false);
+    }, 20000);
+    ifr.onload = function(){
+      if(fin) return; fin = true; clearTimeout(t); ifr.onload = null; resolve(true);
+    };
+    try{
+      frm.action = SCRIPT_URL;
+      document.getElementById('payload').value = JSON.stringify(data);
+      frm.submit();
+    }catch(err){
+      if(!fin){ fin = true; clearTimeout(t); resolve(false); }
+    }
+  });
 }
 
 function showDone(){
