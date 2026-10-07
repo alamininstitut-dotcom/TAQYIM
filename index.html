@@ -27,9 +27,9 @@ body.lang-de .ar-txt{display:none}
 body.lang-de .de{display:block}
 body.lang-de span.de,body.lang-de b.de,body.lang-de small.de{display:inline}
 
-/* ── الشَّريطُ العُلْوي ── */
+/* ── الشَّريطُ العُلْوي: هُوَ وَشَريطُ التَّقَدُّمِ وَحْدَةٌ واحِدَةٌ تُلازِمُ أَعْلى الشّاشَة ── */
+.topwrap{position:sticky; top:0; z-index:20}
 .top{
-  position:sticky; top:0; z-index:20;
   background:rgba(255,253,248,.94); backdrop-filter:blur(8px);
   border-bottom:1px solid var(--line);
   display:flex; align-items:center; justify-content:space-between;
@@ -42,7 +42,7 @@ body.lang-de span.de,body.lang-de b.de,body.lang-de small.de{display:inline}
   padding:6px 15px; cursor:pointer; color:var(--ink); transition:.2s;
 }
 .langbtn:hover{border-color:var(--teal)}
-.bar{height:4px; background:var(--sand)}
+.bar{height:5px; background:var(--sand); box-shadow:0 2px 6px rgba(43,33,24,.07)}
 .bar i{display:block; height:100%; width:0; background:var(--teal); transition:width .35s ease}
 
 /* ── الغِلاف ── */
@@ -140,15 +140,26 @@ textarea{min-height:82px}
 .done h2.de{font-family:'Tajawal',sans-serif; font-size:1.8rem; font-weight:800}
 .done p{color:var(--muted); font-size:1.02rem}
 .conf{font-size:2.6rem; letter-spacing:6px; margin-bottom:10px}
+.exitbtn{
+  margin-top:26px; font-family:'Tajawal',sans-serif;
+  font-size:1.02rem; font-weight:800; color:var(--ink);
+  background:var(--sand); border:2px solid var(--line);
+  border-radius:999px; padding:12px 30px; cursor:pointer; transition:.2s;
+}
+.exitbtn:hover{border-color:var(--teal); background:#fff}
+.byebye{display:none; margin-top:22px; font-size:1rem; color:var(--muted)}
+.byebye.show{display:block}
 </style>
 </head>
 <body class="lang-ar">
 
+<div class="topwrap">
 <div class="top">
   <img src="https://res.cloudinary.com/difo1j3ol/image/upload/v1778521078/%D8%A7%D9%84%D9%84%D9%88%D8%BA%D9%88_anabeh.png" alt="معهد الأمين">
   <button class="langbtn" id="langbtn" onclick="toggleLang()">🇩🇪 Deutsch</button>
 </div>
 <div class="bar"><i id="prog"></i></div>
+</div>
 
 <div class="wrap">
 
@@ -280,6 +291,14 @@ textarea{min-height:82px}
     <h2 class="de">Vielen Dank!</h2>
     <p class="ar-txt">وَصَلَ تَقْييمُكُم. رَأْيُكُمْ يَصْنَعُ الدَّرْسَ القادِم.</p>
     <p class="de">Ihre Bewertung ist angekommen. Ihr Feedback gestaltet die nächste Lektion mit.</p>
+
+    <button class="exitbtn" id="exitbtn" onclick="exitForm()">
+      <span class="ar-txt">إغْلاقُ الصَّفْحَة</span><span class="de">Seite schließen</span>
+    </button>
+    <p class="byebye" id="byebye">
+      <span class="ar-txt">يُمْكِنُكُمْ إغْلاقُ هذِهِ الصَّفْحَةِ الآن. شُكْراً لَكُم 🌿</span>
+      <span class="de">Sie können diese Seite jetzt schließen. Vielen Dank 🌿</span>
+    </p>
   </div>
 
 </div>
@@ -501,6 +520,22 @@ function viaFrame(data){
       if(!fin){ fin = true; clearTimeout(t); resolve(false); }
     }
   });
+}
+
+/* الخُروج: نُحاوِلُ إغْلاقَ النّافِذَةِ — وَهُوَ يَنْجَحُ إذا فُتِحَتِ
+   الاسْتِمارَةُ مِنْ صَفْحَةِ الدَّرْس. وَإنْ مَنَعَ المُتَصَفِّحُ الإغْلاقَ
+   (كَما يَحْدُثُ لَوْ فُتِحَ الرّابِطُ مُباشَرَةً) نَعْرِضُ كَلِمَةَ وَداع. */
+function exitForm(){
+  var btn = document.getElementById('exitbtn');
+  var bye = document.getElementById('byebye');
+  try{ window.close(); }catch(e){}
+  setTimeout(function(){
+    if(!document.hidden){
+      if(btn) btn.style.display = 'none';
+      if(bye) bye.classList.add('show');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+  }, 350);
 }
 
 function showDone(){
