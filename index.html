@@ -456,13 +456,33 @@ function submitForm(){
   });
 }
 
-/* الإرْسالُ عَبْرَ نَموذَجٍ داخِلَ إطارٍ مَخْفيّ:
-   أَكْثَرُ الطُّرُقِ مَوْثوقِيَّةً مَعَ Google Apps Script، لِأَنَّ إرْسالَ
-   النَّماذِجِ لا تَحْكُمُهُ قُيودُ CORS إطْلاقاً. */
+/* الإرْسال:
+   ① نُحاوِلُ fetch أَوَّلاً لِأَنَّهُ يَقْرَأُ رَدَّ الخادِمِ فِعْلاً،
+      فَلا تَظْهَرُ شاشَةُ الشُّكْرِ إلّا إذا أَكَّدَ الخادِمُ حِفْظَ السَّطْر.
+   ② وَإنْ فَشِلَ الاتِّصالُ نَفْسُهُ (شَبَكَةٌ أَوْ CORS) نَلْجَأُ إلى
+      النَّموذَجِ داخِلَ الإطارِ المَخْفيّ، وَهُوَ لا يُحْجَبُ أَبَداً. */
 function send(data){
   if(!SCRIPT_URL || SCRIPT_URL.indexOf('http') !== 0){
     console.warn('SCRIPT_URL لَمْ يُضْبَطْ بَعْد'); return Promise.resolve(false);
   }
+  return fetch(SCRIPT_URL, {
+      method : 'POST',
+      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      body   : JSON.stringify(data)
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if(j && j.ok) return true;
+      console.error('رَفَضَ الخادِمُ الحِفْظ:', j && j.error);
+      return false;                       /* الخادِمُ رَدَّ بِفَشَلٍ — لا نَلْجَأُ لِلإطار */
+    })
+    .catch(function(err){
+      console.warn('تَعَذَّرَتْ قِراءَةُ الرَّدِّ، نُجَرِّبُ الإطارَ المَخْفيّ:', err);
+      return viaFrame(data);
+    });
+}
+
+function viaFrame(data){
   return new Promise(function(resolve){
     var ifr = document.getElementById('sink');
     var frm = document.getElementById('relay');
